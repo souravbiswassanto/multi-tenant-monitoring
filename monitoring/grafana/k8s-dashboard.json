@@ -93,6 +93,72 @@
                 "value": 80
               }
             ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 92,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum(kube_pod_container_resource_requests{resource=\"memory\"}) by (namespace, pod) /  1048576",
+          "format": "table",
+          "legendFormat": "{{pod}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Memory Requests",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
           },
           "unit": "percent"
         },
@@ -102,7 +168,7 @@
         "h": 12,
         "w": 24,
         "x": 0,
-        "y": 0
+        "y": 12
       },
       "id": 90,
       "options": {
@@ -121,7 +187,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "(\n  sum(rate(container_memory_working_set_bytes{image!=\"\"}[5m])) by (namespace, pod)\n/\n  sum(kube_pod_container_resource_requests{resource=\"memory\"}) by (namespace, pod)\n) * 100",
+          "expr": "(\n  sum(container_memory_working_set_bytes{image!=\"\"}) by (namespace, pod)\n/\n  sum(kube_pod_container_resource_requests{resource=\"memory\"}) by (namespace, pod)\n) * 100",
           "format": "table",
           "interval": "",
           "legendFormat": "{{pod}}",
@@ -130,6 +196,72 @@
         }
       ],
       "title": "Memory Requests And Usage Percentage",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 24
+      },
+      "id": 91,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "sum(kube_pod_container_resource_requests{resource=\"cpu\"}) by (namespace, pod)",
+          "format": "table",
+          "legendFormat": "{{pod}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "CPU requested",
       "type": "table"
     },
     {
@@ -170,7 +302,7 @@
         "h": 14,
         "w": 24,
         "x": 0,
-        "y": 12
+        "y": 35
       },
       "id": 89,
       "options": {
@@ -197,7 +329,7 @@
           "refId": "A"
         }
       ],
-      "title": "Memory Requests and Usage Ratio",
+      "title": "CPU Requests and Usage Ratio",
       "type": "table"
     },
     {
@@ -206,7 +338,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 26
+        "y": 49
       },
       "id": 67,
       "panels": [],
@@ -246,7 +378,7 @@
         "h": 8,
         "w": 6,
         "x": 0,
-        "y": 27
+        "y": 50
       },
       "id": 77,
       "options": {
@@ -399,7 +531,7 @@
         "h": 8,
         "w": 6,
         "x": 6,
-        "y": 27
+        "y": 50
       },
       "id": 78,
       "options": {
@@ -544,7 +676,7 @@
         "h": 4,
         "w": 2,
         "x": 12,
-        "y": 27
+        "y": 50
       },
       "id": 63,
       "options": {
@@ -648,7 +780,7 @@
         "h": 12,
         "w": 10,
         "x": 14,
-        "y": 27
+        "y": 50
       },
       "id": 52,
       "options": {
@@ -853,7 +985,7 @@
         "h": 4,
         "w": 2,
         "x": 12,
-        "y": 31
+        "y": 54
       },
       "id": 59,
       "options": {
@@ -915,7 +1047,7 @@
         "h": 4,
         "w": 6,
         "x": 0,
-        "y": 35
+        "y": 58
       },
       "id": 37,
       "options": {
@@ -1070,7 +1202,7 @@
         "h": 4,
         "w": 6,
         "x": 6,
-        "y": 35
+        "y": 58
       },
       "id": 39,
       "options": {
@@ -1221,7 +1353,7 @@
         "h": 4,
         "w": 2,
         "x": 12,
-        "y": 35
+        "y": 58
       },
       "id": 62,
       "options": {
@@ -1264,7 +1396,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 39
+        "y": 62
       },
       "id": 71,
       "panels": [],
@@ -1344,7 +1476,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 40
+        "y": 63
       },
       "id": 72,
       "options": {
@@ -1474,7 +1606,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 40
+        "y": 63
       },
       "id": 55,
       "options": {
@@ -1609,7 +1741,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 48
+        "y": 71
       },
       "id": 46,
       "options": {
@@ -1716,7 +1848,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 48
+        "y": 71
       },
       "id": 50,
       "options": {
@@ -1822,7 +1954,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 56
+        "y": 79
       },
       "id": 54,
       "options": {
@@ -1941,7 +2073,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 56
+        "y": 79
       },
       "id": 73,
       "options": {
@@ -2066,7 +2198,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 64
+        "y": 87
       },
       "id": 82,
       "options": {
@@ -2176,7 +2308,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 64
+        "y": 87
       },
       "id": 83,
       "options": {
@@ -2223,7 +2355,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 72
+        "y": 95
       },
       "id": 86,
       "panels": [],
@@ -2294,7 +2426,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 73
+        "y": 96
       },
       "id": 84,
       "options": {
@@ -2411,7 +2543,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 73
+        "y": 96
       },
       "id": 85,
       "options": {
@@ -2517,7 +2649,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 82
+        "y": 105
       },
       "id": 87,
       "options": {
@@ -2623,7 +2755,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 82
+        "y": 105
       },
       "id": 88,
       "options": {
@@ -2670,7 +2802,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 91
+        "y": 114
       },
       "id": 69,
       "panels": [],
@@ -2742,7 +2874,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 92
+        "y": 115
       },
       "id": 44,
       "options": {
@@ -2882,7 +3014,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 92
+        "y": 115
       },
       "id": 53,
       "options": {
@@ -3067,7 +3199,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 100
+        "y": 123
       },
       "id": 79,
       "options": {
@@ -3179,7 +3311,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 100
+        "y": 123
       },
       "id": 80,
       "options": {
@@ -3319,7 +3451,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 108
+        "y": 131
       },
       "id": 56,
       "options": {
@@ -3460,7 +3592,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 108
+        "y": 131
       },
       "id": 81,
       "options": {
@@ -3634,5 +3766,5 @@
   "timezone": "",
   "title": "Kubernetes / Views / Global",
   "uid": "k8s_views_global",
-  "version": 7
+  "version": 13
 }
