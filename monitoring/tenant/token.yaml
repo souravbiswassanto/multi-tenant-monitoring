@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: tenant-1-sa-token
+  namespace: tenant-1-ns
+  annotations:
+    kubernetes.io/service-account.name: tenant-1
+type: kubernetes.io/service-account-token
