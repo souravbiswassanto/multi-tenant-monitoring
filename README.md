@@ -1,6 +1,5 @@
 # infra-setup
 
-We should write infra setup related information here
 
 
 # Setup Prometheus and Grafana

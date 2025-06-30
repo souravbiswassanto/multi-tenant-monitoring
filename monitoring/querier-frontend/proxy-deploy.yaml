@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prom-frontend
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prom-frontend
+  template:
+    metadata:
+      labels:
+        app: prom-frontend
+        type: querier-frontend
+    spec:
+      serviceAccountName: prometheus-kube-rbac-proxy
+      containers:
+        - name: kube-rbac-proxy
+          image: quay.io/brancz/kube-rbac-proxy:v0.18.1
+          args:
+            - "--secure-listen-address=0.0.0.0:9090"
+            - "--upstream=http://127.0.0.1:8080/"
+            - "--config-file=/etc/kube-rbac-proxy/config.yaml"
+            - "--logtostderr=true"
+            - "--v=10"
+          ports:
+            - containerPort: 9090
+              name: https
+          volumeMounts:
+            - name: config
+              mountPath: /etc/kube-rbac-proxy
+          resources:
+            requests:
+              memory: 64Mi
+              cpu: 30m
+            limits:
+              memory: 500Mi
+              cpu: 150m
+        - name: prom-label-proxy
+          image: quay.io/prometheuscommunity/prom-label-proxy:v0.11.0
+          imagePullPolicy: Always
+          args:
+            - "--insecure-listen-address=127.0.0.1:8080"
+            - "--upstream=http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090/"
+            - "--label=namespace"
+            - "--enable-label-apis=true"
+          resources:
+            requests:
+              memory: 64Mi
+              cpu: 30m
+            limits:
+              memory: 500Mi
+              cpu: 100m
+          ports:
+            - containerPort: 8080
+              name: https
+      volumes:
+        - name: config
+          configMap:
+            name: kube-rbac-proxy
