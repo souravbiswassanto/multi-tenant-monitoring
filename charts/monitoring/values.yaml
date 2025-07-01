@@ -8,8 +8,15 @@ monitoring:
   namespace: monitoring
   prometheusService: prometheus-kube-prometheus-prometheus
   port: 9090
-  grafanaVersion: 12.0.2
-
+  grafana:
+    version: 12.0.2
+    resource: # probably do it separately, we might need separate resource requests for separate tenants
+      requests:
+        cpu: "64m"
+        memory: "64Mi"
+      limits:
+        cpu: "250m"
+        memory: "256Mi"
 queryFrontEnd:
   serviceAccountName: prometheus-kube-rbac-proxy
   clusterRoleBindingName: prometheus-kube-rbac-proxy
