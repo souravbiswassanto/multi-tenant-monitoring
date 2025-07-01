@@ -13,4 +13,4 @@ data:
         apiVersion: v1
         resource: pods
         subresource: metrics
-        namespace: "{{ .Value }}"
+        namespace: "{{ printf "{{ .Value }}" }}"

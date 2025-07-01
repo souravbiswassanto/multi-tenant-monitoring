@@ -11,21 +11,21 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: tenant1-grafana-sa
-  namespace: tenant1-ns
+  namespace: acme-dev
 ---
 # Source: monitoring/templates/tenant/service-account.yaml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: tenant2-grafana-sa
-  namespace: tenant2-ns
+  namespace: acme-prod
 ---
 # Source: monitoring/templates/tenant/token.yaml
 apiVersion: v1
 kind: Secret
 metadata:
   name: tenant1-grafana-sa-token
-  namespace: tenant1-ns
+  namespace: acme-dev
   annotations:
     kubernetes.io/service-account.name: tenant1-grafana-sa
 type: kubernetes.io/service-account-token
@@ -35,7 +35,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: tenant2-grafana-sa-token
-  namespace: tenant2-ns
+  namespace: acme-prod
   annotations:
     kubernetes.io/service-account.name: tenant2-grafana-sa
 type: kubernetes.io/service-account-token
@@ -56,7 +56,7 @@ data:
         apiVersion: v1
         resource: pods
         subresource: metrics
-        namespace: ""
+        namespace: "{{ .Value }}"
 ---
 # Source: monitoring/templates/tenant/grafana.yaml
 # ConfigMap to hold the datasource configuration for tenant1
@@ -64,7 +64,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: tenant1-grafana-datasource-config
-  namespace: tenant1-ns
+  namespace: acme-dev
   labels:
     grafana_datasource: "1"
 data:
@@ -81,7 +81,7 @@ data:
         editable: false
         jsonData:
           # This is the key for tenant isolation
-          customQueryParameters: "namespace=tenant1-ns"
+          customQueryParameters: "namespace=acme-dev"
           httpHeaderName1: "Authorization"
           httpMethod: "GET"
           queryTimeout: 5m
@@ -96,7 +96,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: tenant2-grafana-datasource-config
-  namespace: tenant2-ns
+  namespace: acme-prod
   labels:
     grafana_datasource: "1"
 data:
@@ -113,7 +113,7 @@ data:
         editable: false
         jsonData:
           # This is the key for tenant isolation
-          customQueryParameters: "namespace=tenant2-ns"
+          customQueryParameters: "namespace=acme-prod"
           httpHeaderName1: "Authorization"
           httpMethod: "GET"
           queryTimeout: 5m
@@ -141,7 +141,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: tenant1-grafana-role
-  namespace: tenant1-ns
+  namespace: acme-dev
 rules:
   - apiGroups: [""]
     resources:
@@ -153,19 +153,19 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: tenant2-grafana-role
-  namespace: tenant2-ns
+  namespace: acme-prod
 rules:
   - apiGroups: [""]
     resources:
       - pods/metrics
     verbs: ["get"]
 ---
-# Source: monitoring/templates/tenant/service-account.yaml
+# Source: monitoring/templates/tenant/role-binding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: tenant1-grafana-rb
-  namespace: tenant1-ns
+  namespace: acme-dev
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -173,14 +173,14 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: tenant1-grafana-sa
-    namespace: tenant1-ns
+    namespace: acme-dev
 ---
-# Source: monitoring/templates/tenant/service-account.yaml
+# Source: monitoring/templates/tenant/role-binding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: tenant2-grafana-rb
-  namespace: tenant2-ns
+  namespace: acme-prod
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -188,7 +188,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: tenant2-grafana-sa
-    namespace: tenant2-ns
+    namespace: acme-prod
 ---
 # Source: monitoring/templates/querier-frontend/proxy.yaml
 apiVersion: v1
@@ -212,7 +212,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: tenant1-grafana-svc
-  namespace: tenant1-ns
+  namespace: acme-dev
 spec:
   selector:
     app: grafana
@@ -228,7 +228,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: tenant2-grafana-svc
-  namespace: tenant2-ns
+  namespace: acme-prod
 spec:
   selector:
     app: grafana
@@ -307,7 +307,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: tenant1-grafana
-  namespace: tenant1-ns
+  namespace: acme-dev
 spec:
   replicas: 1
   selector:
@@ -355,7 +355,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: tenant2-grafana
-  namespace: tenant2-ns
+  namespace: acme-prod
 spec:
   replicas: 1
   selector:

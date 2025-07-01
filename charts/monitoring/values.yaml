@@ -1,8 +1,8 @@
 tenants:
   - name: tenant1
-    namespace: tenant1-ns
+    namespace: acme-dev
   - name: tenant2
-    namespace: tenant2-ns
+    namespace: acme-prod
 
 monitoring:
   namespace: monitoring

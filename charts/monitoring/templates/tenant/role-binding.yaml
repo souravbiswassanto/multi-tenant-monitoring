@@ -1,0 +1,16 @@
+{{ range .Values.tenants }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ .name }}-grafana-rb
+  namespace: {{ .namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ .name }}-grafana-role
+subjects:
+  - kind: ServiceAccount
+    name: {{ .name }}-grafana-sa
+    namespace: {{ .namespace }}
+{{- end }}
