@@ -1,0 +1,28 @@
+tenants:
+  - name: tenant1
+    namespace: tenant1-ns
+  - name: tenant2
+    namespace: tenant2-ns
+
+monitoring:
+  namespace: monitoring
+
+queryFrontEnd:
+  serviceAccountName: prometheus-kube-rbac-proxy
+  clusterRoleBindingName: prometheus-kube-rbac-proxy
+  rbacProxy:
+    resources:
+      requests:
+        memory: 64Mi
+        cpu: 30m
+      limits:
+        memory: 500Mi
+        cpu: 150m
+  proxLabelProxy:
+    resources:
+      requests:
+        memory: 64Mi
+        cpu: 30m
+      limits:
+        memory: 500Mi
+        cpu: 100m
