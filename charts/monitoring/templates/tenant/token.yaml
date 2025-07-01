@@ -1,0 +1,10 @@
+{{ range .Values.tenants }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .name }}-grafana-sa-token
+  namespace: {{ .namespace }}
+  annotations:
+    kubernetes.io/service-account.name: {{ .name }}-grafana-sa
+type: kubernetes.io/service-account-token
+{{- end }}

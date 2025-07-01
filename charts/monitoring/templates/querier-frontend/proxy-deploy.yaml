@@ -37,7 +37,7 @@ spec:
           imagePullPolicy: Always
           args:
             - "--insecure-listen-address=127.0.0.1:8080"
-            - "--upstream=http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090/"
+            - "--upstream=http://{{ .Values.monitoring.prometheusService }}.{{ .Values.monitoring.namespace }}.svc.cluster.local:{{ .Values.monitoring.port }}/"
             - "--label=namespace"
             - "--enable-label-apis=true"
           resources:

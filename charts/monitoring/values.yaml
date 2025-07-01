@@ -6,6 +6,9 @@ tenants:
 
 monitoring:
   namespace: monitoring
+  prometheusService: prometheus-kube-prometheus-prometheus
+  port: 9090
+  grafanaVersion: 12.0.2
 
 queryFrontEnd:
   serviceAccountName: prometheus-kube-rbac-proxy
