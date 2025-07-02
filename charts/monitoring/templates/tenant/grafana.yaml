@@ -1,36 +1,5 @@
 {{- range .Values.tenants }}
 ---
-# ConfigMap to hold the datasource configuration for {{ .name }}
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ .name }}-grafana-datasource-config
-  namespace: {{ .namespace }}
-  labels:
-    grafana_datasource: "1"
-data:
-  # https://grafana.com/docs/grafana/latest/administration/provisioning/#example-data-source-configuration-file
-  datasources.yaml: |-
-    apiVersion: 1
-    datasources:
-      - name: Prometheus
-        type: prometheus
-        uid: {{ .name }}-prometheus
-        access: proxy
-        url: https://prom-frontend.{{ $.Values.monitoring.namespace }}.svc.cluster.local:9090/
-        isDefault: true
-        editable: false
-        jsonData:
-          # This is the key for tenant isolation
-          customQueryParameters: "namespace={{ .namespace }}"
-          httpHeaderName1: "Authorization"
-          httpMethod: "GET"
-          queryTimeout: 5m
-          timeInterval: 30s
-          tlsSkipVerify: true
-        secureJsonData:
-          httpHeaderValue1: "Bearer ${PROMETHEUS_TOKEN}"
----
 # Grafana Deployment for {{ .name }}
 apiVersion: apps/v1
 kind: Deployment
@@ -68,10 +37,15 @@ spec:
           volumeMounts:
             - name: datasource-config
               mountPath: /etc/grafana/provisioning/datasources
+            - name: dashboard-config
+              mountPath: /etc/grafana/provisioning/dashboards
       volumes:
         - name: datasource-config
           configMap:
             name: {{ .name }}-grafana-datasource-config
+        - name: dashboard-config
+          configMap:
+            name: {{ .name }}-grafana-dashboards
 ---
 # Service to expose the Grafana instance for {{ .name }}
 apiVersion: v1

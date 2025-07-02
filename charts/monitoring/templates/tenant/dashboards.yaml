@@ -1,0 +1,26 @@
+{{ range .Values.tenants }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .name }}-grafana-dashboards
+  namespace: {{ .namespace }}
+  labels:
+    # This label is used by Grafana's dashboard provisioner to discover this ConfigMap
+    grafana_dashboard: "1"
+data:
+  dashboards.yaml: |-
+    apiVersion: 1
+    providers:
+      - name: 'default'
+        orgId: 1
+        folder: ''
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /etc/grafana/provisioning/dashboards
+  # The key here will be the filename inside Grafana's provisioning directory
+  {{ .name }}-k8s-dashboard.json: |-
+    {{- $.Files.Get (printf "dashboards/temp-%s.json" .name) | nindent 4 }}
+  {{- end }}
